@@ -1,0 +1,16 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -e CI=true -t saipapani/react-app -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run saipapani/react-app npm run test -- --coverage
+
+after_success:
+  - docker build saipapani/multi-client ./client
+  - docker build saipapani/multi-nginx ./nginx
+  - docker build saipapani/multi-server ./server
+  - docker build saipapani/multi-worker ./worker
+  
